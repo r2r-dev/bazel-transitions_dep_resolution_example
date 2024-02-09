@@ -1,0 +1,93 @@
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
+load(":defs.bzl", "foo")
+
+string_flag(
+    name = "use_color",
+    build_setting_default = "translucent",
+)
+
+string_flag(
+    name = "use_letter",
+    build_setting_default = "white",
+)
+
+config_setting(
+    name = "use_a_blue",
+    flag_values = {
+        ":use_letter": "a",
+        ":use_color": "blue",
+    },
+)
+
+foo(
+    name = "a_blue",
+    ask = ":host",
+    use_color = "red",
+    use_letter = "b",
+)
+
+config_setting(
+    name = "use_a_red",
+    flag_values = {
+        ":use_letter": "a",
+        ":use_color": "red",
+    },
+)
+
+foo(
+    name = "a_red",
+    ask = ":host",
+    use_color = "blue",
+    use_letter = "b",
+)
+
+config_setting(
+    name = "use_a_black",
+    flag_values = {
+        ":use_letter": "a",
+        ":use_color": "black",
+    },
+)
+
+foo(name = "a_black")
+
+config_setting(
+    name = "use_b_red",
+    flag_values = {
+        ":use_letter": "b",
+        ":use_color": "red",
+    },
+)
+
+foo(
+    name = "b_red",
+    ask = ":host",
+    use_color = "red",
+    use_letter = "a",
+)
+
+config_setting(
+    name = "use_b_blue",
+    flag_values = {
+        ":use_letter": "b",
+        ":use_color": "blue",
+    },
+)
+
+foo(
+    name = "b_blue",
+    ask = ":host",
+    use_color = "black",
+    use_letter = "a",
+)
+
+alias(
+    name = "host",
+    actual = select({
+        ":use_a_blue": "a_blue",
+        ":use_a_red": "a_red",
+        ":use_a_black": "a_black",
+        ":use_b_blue": "b_blue",
+        ":use_b_red": "b_red",
+    }),
+)
